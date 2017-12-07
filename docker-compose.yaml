@@ -1,0 +1,30 @@
+version: '3'
+services:
+  database:
+    image: postgres
+    container_name: database
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: scfg
+    networks:
+      - scfgnet
+
+  scfg:
+    build:
+      context: .
+    container_name: scfg
+    volumes:
+      - .:/go/src/scfg
+    ports:
+      - "9002:9002"
+    networks:
+      - scfgnet
+    links:
+      - database
+    command: make run
+
+networks:
+  scfgnet:
