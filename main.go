@@ -14,6 +14,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/jinzhu/gorm"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -57,6 +58,7 @@ func (app *App) initDbConnection(configPath string) error {
 func (app *App) initRouter() {
 	app.router = mux.NewRouter()
 	app.router.HandleFunc("/get", api.GetHandler(app.loaderService)).Methods("POST")
+	app.router.Handle("/metrics", promhttp.Handler())
 }
 
 // initLoaderService initializes service of loading config

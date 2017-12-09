@@ -2,6 +2,8 @@ package cache
 
 import (
 	"sync"
+
+	"github.com/vlamug/scfg/metrics"
 )
 
 // Mem is a memory cache implementation
@@ -20,6 +22,8 @@ func (m *Mem) Set(key, value string) {
 	m.Lock()
 	defer m.Unlock()
 	m.values[key] = value
+
+	metrics.MemCfgStored.Set(float64(len(m.values)))
 }
 
 // Get gets config from memory
