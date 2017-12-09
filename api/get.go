@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"encoding/json"
 
-	"github.com/vlamug/scfg/storage"
 	"github.com/vlamug/scfg/request"
+	"github.com/vlamug/scfg/loader"
 )
 
-func GetHandler(storage storage.Storage) http.HandlerFunc {
+func GetHandler(loaderService *loader.Loader) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -19,8 +19,8 @@ func GetHandler(storage storage.Storage) http.HandlerFunc {
 			return
 		}
 
-		cfg := storage.Get(req)
+		cfg := loaderService.Load(req)
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(cfg.CSet))
+		w.Write([]byte(cfg))
 	}
 }

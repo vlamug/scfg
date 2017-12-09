@@ -8,6 +8,8 @@ import (
 	"github.com/vlamug/scfg/config"
 	"github.com/vlamug/scfg/api"
 	"github.com/vlamug/scfg/storage"
+	"github.com/vlamug/scfg/loader"
+	"github.com/vlamug/scfg/cache"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/jinzhu/gorm"
@@ -16,6 +18,7 @@ import (
 
 type App struct {
 	db *gorm.DB
+	loaderService *loader.Loader
 
 	router *mux.Router
 }
@@ -45,7 +48,11 @@ func (app *App) initDbConnection(configPath string) error {
 
 func (app *App) initRouter() {
 	app.router = mux.NewRouter()
-	app.router.HandleFunc("/get", api.GetHandler(storage.NewPostgresStorage(app.db))).Methods("POST")
+	app.router.HandleFunc("/get", api.GetHandler(app.loaderService)).Methods("POST")
+}
+
+func (app *App) initLoaderService() {
+	app.loaderService = loader.NewLoader(storage.NewPostgresStorage(app.db), cache.NewMem())
 }
 
 func (app *App) listenAndServe() {
@@ -67,6 +74,7 @@ func main() {
 		panic(err)
 	}
 
+	app.initLoaderService()
 	app.initRouter()
 	app.listenAndServe()
 

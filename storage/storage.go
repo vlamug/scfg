@@ -1,15 +1,12 @@
 package storage
 
 import (
-	"strings"
-
 	"github.com/jinzhu/gorm"
 	"github.com/vlamug/scfg/model"
-	"github.com/vlamug/scfg/request"
 )
 
 type Storage interface {
-	Get(request request.GetRequest) (model.Config)
+	Get(ckey string) (model.Config)
 }
 
 type PostgresStorage struct {
@@ -20,9 +17,9 @@ func NewPostgresStorage(db *gorm.DB) *PostgresStorage {
 	return &PostgresStorage{db: db}
 }
 
-func (st *PostgresStorage) Get(req request.GetRequest) (model.Config) {
+func (st *PostgresStorage) Get(ckey string) (model.Config) {
 	var cfg model.Config
-	st.db.First(&cfg, "ckey = ?", strings.Join([]string{req.Type, req.Data}, ":"))
+	st.db.First(&cfg, "ckey = ?", ckey)
 
 	return cfg
 }
