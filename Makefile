@@ -1,3 +1,4 @@
+.PHONY: docker
 docker:
 	@echo " >> up docker env..."
 	docker-compose stop

@@ -8,7 +8,7 @@ import (
 // Database is config of connection to database
 type Database struct {
 	Host     string `json:"host"`
-	Port     int    `json:"port"`
+	Port     string `json:"port"`
 	User     string `json:"user"`
 	Password string `json:"password"`
 	DbName   string `json:"db_name"`

@@ -4,7 +4,7 @@ services:
     image: postgres
     container_name: database
     ports:
-      - "5433:5433"
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
@@ -14,10 +14,10 @@ services:
 
   scfg:
     build:
-      context: .
+      context: ./docker/scfg
     container_name: scfg
     volumes:
-      - .:/go/src/scfg
+      - .:/go/src/github.com/vlamug/scfg
     ports:
       - "9002:9002"
     networks:
@@ -25,6 +25,15 @@ services:
     links:
       - database
     command: make run
+
+  #migration:
+  #  build:
+  #    context: ./docker/migration
+  #  container_name: migration
+  #  volumes:
+  #    - ./migrations:/migrations
+  #  links:
+  #    - database
 
 networks:
   scfgnet:

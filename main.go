@@ -1,19 +1,21 @@
 package main
 
 import (
-	"net/http"
 	"fmt"
+	"flag"
+	"net/http"
 
 	"github.com/vlamug/scfg/config"
+	"github.com/vlamug/scfg/api"
+	"github.com/vlamug/scfg/storage"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/jinzhu/gorm"
 	"github.com/gorilla/mux"
-	"database/sql"
-	"flag"
 )
 
 type App struct {
-	db *sql.DB
+	db *gorm.DB
 
 	router *mux.Router
 }
@@ -25,7 +27,7 @@ func (app *App) initDbConnection(configPath string) error {
 	}
 
 	dsn := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Host,
 		cfg.Port,
 		cfg.User,
@@ -33,24 +35,21 @@ func (app *App) initDbConnection(configPath string) error {
 		cfg.DbName,
 	)
 
-	conn, err := sql.Open("postgres", dsn)
+	app.db, err = gorm.Open("postgres", dsn)
 	if err != nil {
-		return err
+		panic(err)
 	}
-	app.db = conn
 
 	return nil
 }
 
 func (app *App) initRouter() {
 	app.router = mux.NewRouter()
-	app.router.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		fmt.Println("yes")
-	})
+	app.router.HandleFunc("/get", api.GetHandler(storage.NewPostgresStorage(app.db))).Methods("POST")
 }
 
 func (app *App) listenAndServe() {
-	server := http.Server{Addr:":9001", Handler: app.router}
+	server := http.Server{Addr:":9002", Handler: app.router}
 	panic(server.ListenAndServe())
 }
 
