@@ -6,7 +6,7 @@ import (
 )
 
 type Storage interface {
-	Get(ckey string) (model.Config)
+	Get(ckey string) model.Config
 }
 
 type PostgresStorage struct {
@@ -17,7 +17,7 @@ func NewPostgresStorage(db *gorm.DB) *PostgresStorage {
 	return &PostgresStorage{db: db}
 }
 
-func (st *PostgresStorage) Get(ckey string) (model.Config) {
+func (st *PostgresStorage) Get(ckey string) model.Config {
 	var cfg model.Config
 	st.db.First(&cfg, "ckey = ?", ckey)
 

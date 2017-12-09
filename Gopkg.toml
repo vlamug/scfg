@@ -22,10 +22,6 @@
 
 
 [[constraint]]
-  name = "github.com/go-pg/pg"
-  version = "6.6.16"
-
-[[constraint]]
   name = "github.com/gorilla/mux"
   version = "1.6.0"
 
@@ -34,5 +30,5 @@
   version = "1.0.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/lib/pq"
+  branch = "v1"
+  name = "gopkg.in/check.v1"
