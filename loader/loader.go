@@ -9,6 +9,7 @@ import (
 	"github.com/vlamug/scfg/request"
 )
 
+// Loader is service for loading config from database using memory cache
 type Loader struct {
 	storage storagepkg.Storage
 
@@ -16,10 +17,12 @@ type Loader struct {
 	cache cachepkg.Cache
 }
 
+// NewLoader creates new load service
 func NewLoader(storage storagepkg.Storage, cache cachepkg.Cache) *Loader {
 	return &Loader{storage: storage, cache: cache}
 }
 
+// Load loads config from cache if exists otherwise from database
 func (ld *Loader) Load(req request.GetRequest) string {
 	ld.Lock()
 	defer ld.Unlock()

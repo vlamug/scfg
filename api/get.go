@@ -8,6 +8,7 @@ import (
 	"github.com/vlamug/scfg/loader"
 )
 
+// GetHandler loads config by key
 func GetHandler(loaderService *loader.Loader) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
