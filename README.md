@@ -54,9 +54,15 @@ make run
 ```
 
 ### In docker environment
-Run command:
+1. Up docker containers running command:
 ```bash
 $ make docker
+```
+2. Download *goose* and run migrations specifying correct data to PosgreSQL:
+```bash
+$ go get -u github.com/pressly/goose/cmd/goose
+$ cd migrations/
+$ goose postgres "user=postgres password=root dbname=scfg sslmode=disable" up
 ```
 
 It will up docker environment with PosgreSQL container 
